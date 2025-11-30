@@ -1,0 +1,40 @@
+name: Cozinhar APK do Jorge
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: # Permite apertar um botão para gerar manualmente
+
+jobs:
+  build-android:
+    name: Gerar APK Android
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Pegar o Código
+        uses: actions/checkout@v3
+
+      - name: Instalar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Instalar Flet e Edge-TTS
+        run: |
+          pip install -r requirements.txt
+
+      - name: Construir o APK (Flet Action)
+        uses: flet-dev/flet-action@v1
+        with:
+          # O comando que transforma Python em Android
+          command: build apk --verbose
+        env:
+          # Configurações opcionais para evitar erros de memória
+          FLET_BUILD_OPTS: "--no-android-x"
+
+      - name: Upload do APK Pronto
+        uses: actions/upload-artifact@v4
+        with:
+          name: App-Narrator-Jorge
+          path: build/apk/*.apk
+          if-no-files-found: error
