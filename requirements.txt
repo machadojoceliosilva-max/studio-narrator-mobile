@@ -1,2 +1,3 @@
 flet
 edge-tts
+flet-permission-handler
